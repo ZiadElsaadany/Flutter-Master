@@ -955,3 +955,161 @@ Calling `counter1` does not change the state captured by `counter2`.
 - Different closures can have separate captured state.
 - `counter` is a variable referencing the closure; the returned function itself
   is the closure.
+
+## 14. Higher-Order Functions
+
+### Definition
+
+> A higher-order function is a function that takes another function as an argument, returns a function, or both.
+
+```dart
+// A function is higher-order if it accepts a function,
+// returns a function, or does both.
+```
+
+### 1. Accepting a Function
+
+```dart
+// calculate is a higher-order function because it
+// accepts another function as an argument.
+int calculate(
+  int a,
+  int b,
+  int Function(int, int) operation,
+) {
+  return operation(a, b);
+}
+```
+
+Example:
+
+```dart
+int add(int a, int b) => a + b;
+
+void main() {
+  print(calculate(5, 3, add)); // 8
+}
+```
+
+### 2. Returning a Function
+
+```dart
+// createMultiplier is a higher-order function because
+// it returns another function.
+int Function(int) createMultiplier(int multiplier) {
+  return (int number) {
+    return number * multiplier;
+  };
+}
+```
+
+Example:
+
+```dart
+final multiplyBy2 = createMultiplier(2);
+
+print(multiplyBy2(5)); // 10
+```
+
+### 3. Accepting and Returning a Function
+
+```dart
+// applyTwice is a higher-order function because it
+// accepts a function and returns another function.
+int Function(int) applyTwice(
+  int Function(int) operation,
+) {
+  return (int number) {
+    return operation(operation(number));
+  };
+}
+```
+
+Example:
+
+```dart
+int doubleNumber(int number) => number * 2;
+
+void main() {
+  final doubleTwice = applyTwice(doubleNumber);
+
+  print(doubleTwice(5)); // 20
+}
+```
+
+### Important Distinction
+
+The function passed into a higher-order function is not necessarily a
+higher-order function itself.
+
+```dart
+int doubleNumber(int number) => number * 2;
+```
+
+`doubleNumber` is a normal function.
+
+```dart
+int Function(int) applyTwice(
+  int Function(int) operation,
+) {
+  return (number) => operation(operation(number));
+}
+```
+
+`applyTwice` is a higher-order function because it works with another function
+as a value.
+
+### Dart Examples
+
+Methods such as:
+
+```dart
+numbers.forEach(...)
+numbers.map(...)
+numbers.where(...)
+```
+
+are higher-order functions because they accept functions as arguments.
+
+```dart
+// forEach, map, and where are higher-order functions
+// because they accept functions as arguments.
+```
+
+### Mental Model
+
+```text
+Normal Function
+    ↓
+Works mainly with data
+
+Higher-Order Function
+    ↓
+Works with functions as values
+```
+
+A function can be treated like other values such as:
+
+```dart
+int
+String
+bool
+```
+
+Therefore, a higher-order function can receive or return behavior, not only
+data.
+
+```dart
+// Higher-order functions allow behavior to be passed
+// around and composed like other values.
+```
+
+### Quick Revision
+
+- A higher-order function accepts a function, returns a function, or both.
+- A callback is often passed into a higher-order function.
+- Functions such as `map`, `where`, and `forEach` are common higher-order
+  functions in Dart.
+- The function being passed is not automatically a higher-order function.
+- Higher-order functions are possible because functions are first-class values
+  in Dart.
