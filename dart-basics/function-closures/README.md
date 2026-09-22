@@ -514,3 +514,133 @@ Do not put statements or a block after `=>`.
   flow.
 - Arrow syntax works with named and anonymous functions.
 - An anonymous arrow function can be passed directly as a callback.
+
+## 11. Functions Returning Functions
+
+### Definition
+
+> A function can return another function as its result.
+
+```dart
+// This function returns another function.
+void Function() getOperation() {
+  return () {
+    print('Hello');
+  };
+}
+```
+
+Calling:
+
+```dart
+var operation = getOperation();
+```
+
+executes `getOperation`, which returns another function. `operation` stores that
+returned function, so:
+
+```dart
+operation();
+```
+
+invokes the returned function and prints `Hello`.
+
+### Function Return Type
+
+Read:
+
+```dart
+void Function() getOperation()
+```
+
+as:
+
+> `getOperation` is a function that returns a function of type `void Function()`.
+
+The first `()` belongs to the returned function type. The final `()` belongs to
+the parameter list of `getOperation`.
+
+Prefer an exact function type over the broad `Function` type when possible:
+
+```dart
+void Function() getOperation() // Exact return type.
+Function getOperation()        // Broad return type.
+```
+
+### Returning Customized Behavior
+
+```dart
+int Function(int) createMultiplier(int multiplier) {
+  return (int number) {
+    return number * multiplier;
+  };
+}
+
+void main() {
+  final multiplyBy2 = createMultiplier(2);
+  final multiplyBy10 = createMultiplier(10);
+
+  print(multiplyBy2(5));  // 10
+  print(multiplyBy10(5)); // 50
+}
+```
+
+```dart
+// A function can create and return customized behavior.
+```
+
+This line:
+
+```dart
+final multiplyBy2 = createMultiplier(2);
+```
+
+makes `multiplyBy2` have the inferred type:
+
+```dart
+int Function(int)
+```
+
+It stores the function returned by `createMultiplier`. Passing a different
+`multiplier` creates behavior customized with a different value.
+
+### Another Example
+
+```dart
+// createAdder returns a customized function based on the provided amount.
+int Function(int) createAdder(int amount) {
+  return (int number) {
+    return number + amount;
+  };
+}
+
+void main() {
+  // addFive stores a function that takes an int and returns an int.
+  final addFive = createAdder(5);
+
+  print(addFive(10)); // 15
+}
+```
+
+### Mental Model
+
+A function can return behavior just like it can return data.
+
+```text
+createAdder(5)
+      ↓
+returns a function
+      ↓
+addFive stores that function
+      ↓
+addFive(10)
+      ↓
+15
+```
+
+### Quick Revision
+
+- Functions are values, so they can be returned from other functions.
+- The returned function can be stored in a variable and invoked later.
+- Use an exact return type such as `int Function(int)` when possible.
+- Returning functions lets us create customized behavior.
