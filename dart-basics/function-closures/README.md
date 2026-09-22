@@ -802,3 +802,156 @@ A function resolves variables by looking at:
 - Outer scopes cannot access variables declared only inside inner scopes.
 - Lexical scope depends on where a function is defined, not where it is called.
 - If multiple variables have the same name, Dart uses the nearest enclosing one.
+
+## 13. Closures
+
+### Definition
+
+> A closure is a function that captures variables from its surrounding lexical scope.
+
+```dart
+// Closure = Function + Captured Outer State
+```
+
+More precisely:
+
+```dart
+// A closure is a function together with the outer variables it captures.
+```
+
+### What Exactly Is the Closure?
+
+```dart
+int Function() createCounter() {
+  int count = 0;
+
+  return () {
+    count++;
+    return count;
+  };
+}
+```
+
+The closure is the returned function itself:
+
+```dart
+() {
+  count++;
+  return count;
+}
+```
+
+It is a closure because it captures `count` from the surrounding scope.
+
+```dart
+final counter = createCounter();
+```
+
+`counter` is a variable that holds a reference to the closure.
+
+```text
+counter
+   ↓
+references
+   ↓
+Closure
+├── Function code
+└── Captured environment
+    └── count
+```
+
+### Capturing Variables
+
+```dart
+void main() {
+  int count = 0;
+
+  void increment() {
+    count++;
+    print(count);
+  }
+
+  increment(); // 1
+  increment(); // 2
+}
+```
+
+```dart
+// increment is a closure because it captures count from its surrounding scope.
+```
+
+The function uses the surrounding `count` variable rather than receiving it as
+a parameter or declaring it locally.
+
+### Keeping Captured State Alive
+
+```dart
+int Function() createCounter() {
+  int count = 0;
+
+  return () {
+    count++;
+    return count;
+  };
+}
+
+void main() {
+  final counter = createCounter();
+
+  print(counter()); // 1
+  print(counter()); // 2
+  print(counter()); // 3
+}
+```
+
+```dart
+// The closure keeps accessing and modifying the same captured variable across calls.
+```
+
+```dart
+// A closure can keep captured variables alive even after the outer function has finished.
+```
+
+`createCounter` finishes after returning, but its captured `count` remains
+available through the returned closure.
+
+### Separate Closure State
+
+```dart
+final counter1 = createCounter();
+final counter2 = createCounter();
+
+print(counter1()); // 1
+print(counter1()); // 2
+
+print(counter2()); // 1
+```
+
+```dart
+// Each closure can have its own captured state.
+```
+
+Each call to `createCounter()` creates a new closure with its own `count`.
+Calling `counter1` does not change the state captured by `counter2`.
+
+### Important Distinction
+
+- Every closure is a function.
+- The word **closure** emphasizes that the function captures variables from an
+  outer lexical scope.
+- A variable such as `counter` is not the closure concept itself; it stores a
+  reference to the closure.
+
+```dart
+// A closure is a function that captures and retains access to variables from its lexical scope.
+```
+
+### Quick Revision
+
+- A closure is still a function.
+- It captures variables from its surrounding lexical scope.
+- It can continue accessing those variables later.
+- Captured variables can preserve state across multiple calls.
+- Different closures can have separate captured state.
+- `counter` is a variable referencing the closure; the returned function itself
+  is the closure.
