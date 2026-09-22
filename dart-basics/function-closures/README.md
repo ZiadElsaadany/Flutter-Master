@@ -644,3 +644,161 @@ addFive(10)
 - The returned function can be stored in a variable and invoked later.
 - Use an exact return type such as `int Function(int)` when possible.
 - Returning functions lets us create customized behavior.
+
+## 12. Lexical Scope
+
+### Definition
+
+> Lexical scope means a function can access variables from the scope where it was defined.
+
+```dart
+void main() {
+  String name = 'Ziad';
+
+  void greet() {
+    print('Hello $name');
+  }
+
+  greet();
+}
+```
+
+`greet` can access `name` because `greet` was defined inside the scope where
+`name` exists.
+
+```dart
+// A scope defines where a variable can be accessed in the code.
+```
+
+### Inner and Outer Scopes
+
+```dart
+void main() {
+  int x = 10;
+
+  void test() {
+    print(x); // ✅
+  }
+
+  test();
+}
+```
+
+```dart
+// An inner scope can access variables from its outer scope.
+```
+
+The reverse does not work:
+
+```dart
+void main() {
+  void test() {
+    int x = 10;
+  }
+
+  print(x); // ❌
+}
+```
+
+This example does not compile because `x` exists only inside `test`.
+
+```dart
+// An outer scope cannot access variables declared only inside an inner scope.
+```
+
+### Where a Function Is Defined Matters
+
+```dart
+void main() {
+  String name = 'Ziad';
+
+  void greet() {
+    print(name);
+  }
+
+  execute(greet);
+}
+
+void execute(void Function() callback) {
+  String name = 'Ahmed';
+
+  callback();
+}
+```
+
+This prints:
+
+```text
+Ziad
+```
+
+It does not print `Ahmed`. `greet` resolves `name` from where `greet` was
+defined, not from inside `execute`, where it is called.
+
+```dart
+// Lexical scope is determined by where a function is defined, not where it is called.
+```
+
+```dart
+// A function looks outward from where it was defined to resolve variables.
+```
+
+### Shadowing
+
+```dart
+String name = 'Global';
+
+void main() {
+  String name = 'Ziad';
+
+  print(name); // Ziad
+}
+```
+
+```dart
+// Shadowing happens when an inner scope declares a variable with the same name as an outer variable.
+```
+
+The inner `name` hides the global `name` while code is inside `main`.
+
+```dart
+void main() {
+  int number = 10;
+
+  void first() {
+    int number = 20;
+
+    void second() {
+      print(number);
+    }
+
+    second();
+  }
+
+  first();
+}
+```
+
+This prints `20` because Dart resolves the nearest enclosing variable first.
+
+```dart
+// Dart resolves variables from the nearest enclosing lexical scope.
+```
+
+### Mental Model
+
+```text
+A function resolves variables by looking at:
+1. Its own scope
+2. The nearest enclosing scope
+3. The next outer scope
+4. And so on
+```
+
+### Quick Revision
+
+- Scope determines where variables can be accessed.
+- Inner scopes can access outer-scope variables.
+- Outer scopes cannot access variables declared only inside inner scopes.
+- Lexical scope depends on where a function is defined, not where it is called.
+- If multiple variables have the same name, Dart uses the nearest enclosing one.
