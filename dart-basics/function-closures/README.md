@@ -391,3 +391,126 @@ Callback answers:
 - It can be passed directly as a callback.
 - A variable holding an anonymous function does not turn it into a named
   function.
+
+## 10. Arrow Functions
+
+### Definition
+
+> An arrow function is a shorter syntax for a function that contains a single expression.
+
+```dart
+int sum(int a, int b) => a + b;
+```
+
+It is equivalent to:
+
+```dart
+int sum(int a, int b) {
+  return a + b;
+}
+```
+
+```dart
+// An arrow function evaluates a single expression and returns its result.
+```
+
+### Expression vs Statement
+
+```dart
+// An expression produces a value.
+```
+
+Examples of expressions:
+
+```dart
+2 + 3
+age >= 18
+'Hello $name'
+sum(2, 3)
+print('Hello')
+```
+
+A function call is an expression. This includes a call such as `print('Hello')`,
+whose return type is `void`.
+
+```dart
+// A statement performs an action or controls program flow.
+```
+
+Examples of statements:
+
+```dart
+return value;
+
+if (condition) {
+}
+
+for (final item in items) {
+}
+
+int value = 10;
+```
+
+A statement can contain an expression:
+
+```dart
+return a + b;
+```
+
+Here:
+
+- `return a + b;` is a statement.
+- `a + b` is an expression.
+
+### Anonymous Arrow Function
+
+```dart
+var multiply = (int a, int b) => a * b;
+```
+
+```dart
+// This is an anonymous arrow function stored in a variable.
+```
+
+It is:
+
+- Anonymous because it has no declared name.
+- Arrow because it uses `=>`.
+
+### Arrow Function as a Callback
+
+```dart
+numbers.map((number) => number * 2);
+```
+
+The function passed to `map` is:
+
+```dart
+(number) => number * 2
+```
+
+It is:
+
+- An anonymous function.
+- An arrow function.
+- A callback.
+
+```dart
+// This is an anonymous arrow function used as a callback.
+```
+
+### Rule
+
+```dart
+// Use an arrow function when the function body contains a single expression.
+```
+
+Do not put statements or a block after `=>`.
+
+### Quick Revision
+
+- `=> expression` is shorthand for `{ return expression; }`.
+- An expression produces a value; a statement performs an action or controls
+  flow.
+- Arrow syntax works with named and anonymous functions.
+- An anonymous arrow function can be passed directly as a callback.
