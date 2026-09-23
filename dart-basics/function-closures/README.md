@@ -1113,3 +1113,241 @@ data.
 - The function being passed is not automatically a higher-order function.
 - Higher-order functions are possible because functions are first-class values
   in Dart.
+
+## 15. Function Parameters
+
+### Parameters vs Arguments
+
+```dart
+// Parameters are variables declared by a function to receive values.
+// Arguments are the actual values passed when calling a function.
+```
+
+```dart
+void greet(String name) {
+  print('Hello $name');
+}
+
+greet('Ziad');
+```
+
+`name` is a parameter; `'Ziad'` is the argument supplied for it.
+
+```dart
+// Parameters receive values.
+// Arguments provide values.
+```
+
+### 1. Required Positional Parameters
+
+```dart
+// Required positional parameters are mandatory and matched by position.
+```
+
+```dart
+void createUser(String name, int age) {
+  print('$name - $age');
+}
+
+createUser('Ziad', 24);
+```
+
+Both arguments must be provided, and their order matters.
+
+```dart
+// Positional arguments are matched to parameters based on their order.
+```
+
+### 2. Optional Positional Parameters
+
+```dart
+// Optional positional parameters may be omitted,
+// but their position still matters.
+```
+
+Place optional positional parameters inside `[]`:
+
+```dart
+void register(
+  String email,
+  [String? referralCode],
+) {}
+
+register('ziad@example.com');
+register('ziad@example.com', 'ABC123');
+```
+
+```dart
+// [] defines optional positional parameters.
+```
+
+`referralCode` is nullable because omitting it gives it the value `null`.
+
+### 3. Optional Positional Parameters with Default Values
+
+```dart
+// A default value is used when an optional parameter is not provided.
+```
+
+```dart
+void greet(String name, [int age = 18]) {
+  print('$name - $age');
+}
+
+greet('Ziad');     // age = 18
+greet('Ziad', 24); // age = 24
+```
+
+```dart
+// A provided argument overrides the parameter's default value.
+```
+
+### 4. Named Parameters
+
+```dart
+// Named parameters are passed using their parameter names instead of their position.
+```
+
+```dart
+void createUser({
+  String? name,
+  int? age,
+}) {}
+
+createUser(name: 'Ziad', age: 24);
+createUser(age: 24, name: 'Ziad'); // Also valid.
+```
+
+```dart
+// Named arguments explicitly specify which parameter receives each value.
+// The order of named arguments does not matter.
+// Named parameters are optional by default unless marked as required.
+// {} defines named parameters.
+```
+
+```text
+[] -> Optional positional parameters
+{} -> Named parameters
+```
+
+### 5. Required Named Parameters
+
+```dart
+// A required named parameter must be provided by name when the function is called.
+```
+
+```dart
+void createUser({
+  required String name,
+  required int age,
+}) {}
+
+createUser(name: 'Ziad', age: 24);
+```
+
+```dart
+// required makes a named parameter mandatory without making it positional.
+// required controls whether an argument must be provided.
+// ? controls whether the value itself can be null.
+```
+
+These rules are independent:
+
+```dart
+void test({required String? name}) {}
+
+test(name: null); // Valid: the argument is present and null is allowed.
+```
+
+### 6. Optional Named Parameters with Default Values
+
+```dart
+// A default value is used when an optional named parameter is not provided.
+```
+
+```dart
+void createUser({
+  String name = 'Guest',
+  int age = 18,
+}) {}
+```
+
+A non-null default avoids `?`: when the argument is omitted, the parameter
+receives its default instead of `null`.
+
+```dart
+// An optional parameter needs either a nullable type or a default value.
+```
+
+### 7. Mixing Positional and Named Parameters
+
+```dart
+// A function can combine positional parameters with named parameters.
+```
+
+```dart
+void createUser(
+  String id, {
+  required String name,
+  int age = 18,
+}) {
+  print('$id - $name - $age');
+}
+
+createUser('user_1', name: 'Ziad', age: 24);
+```
+
+`id` is required and positional. `name` is required and named. `age` is named,
+optional, and defaults to `18`.
+
+```dart
+// Positional arguments are passed by order.
+// Named arguments are passed by parameter name.
+// Function parameter rules also apply to constructor parameters.
+```
+
+Flutter widget constructors use the same rules:
+
+```dart
+class ProfileCard extends StatelessWidget {
+  const ProfileCard(this.id, {super.key, required this.name, this.age = 18});
+
+  final String id;
+  final String name;
+  final int age;
+
+  @override
+  Widget build(BuildContext context) => Text('$id - $name - $age');
+}
+
+ProfileCard('user_1', name: 'Ziad');
+```
+
+### Quick Revision
+
+```text
+String name
+-> Required positional
+
+[String? name]
+-> Optional positional
+
+[String name = 'Guest']
+-> Optional positional with default value
+
+{String? name}
+-> Optional named
+
+{required String name}
+-> Required named
+
+{String name = 'Guest'}
+-> Optional named with default value
+```
+
+```dart
+// Required = must be provided.
+// Positional = matched by order.
+// Named = matched by parameter name.
+// Optional = may be omitted.
+```
