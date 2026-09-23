@@ -1351,3 +1351,150 @@ String name
 // Named = matched by parameter name.
 // Optional = may be omitted.
 ```
+
+## 16. typedef and Function Type Aliases
+
+### Definition
+
+```dart
+// A typedef gives a function type a readable alias.
+// A typedef creates a type alias; it does not create a function or a value.
+```
+
+```dart
+typedef Operation = int Function(int, int);
+```
+
+`int Function(int, int)` is the original type: two `int` inputs and an `int`
+result. `Operation` is a readable alias for that same type.
+
+```text
+Operation = int Function(int, int)
+```
+
+### Why Use typedef?
+
+Without an alias:
+
+```dart
+int calculate(
+  int a,
+  int b,
+  int Function(int, int) operation,
+) {
+  return operation(a, b);
+}
+```
+
+With an alias:
+
+```dart
+typedef Operation = int Function(int, int);
+
+int calculate(
+  int a,
+  int b,
+  Operation operation,
+) {
+  return operation(a, b);
+}
+```
+
+```dart
+// Typedefs improve readability and avoid repeating complex type declarations.
+```
+
+### Assigning Functions to a Typedef Type
+
+```dart
+typedef Operation = int Function(int, int);
+
+int add(int a, int b) => a + b;
+int subtract(int a, int b) => a - b;
+
+void main() {
+  Operation operation = add;
+  print(operation(10, 5)); // 15
+
+  operation = subtract;
+  print(operation(10, 5)); // 5
+}
+```
+
+Both functions have the compatible type `int Function(int, int)`, so either
+can be stored in an `Operation` variable.
+
+```dart
+// A function can be assigned to a typedef variable when its function type matches the alias.
+```
+
+### Function Type Matching
+
+```dart
+typedef Validator = bool Function(String);
+
+bool isEmailValid(String email) {
+  return email.contains('@');
+}
+
+int getLength(String text) {
+  return text.length;
+}
+
+Validator validator = isEmailValid; // Valid.
+// Validator validator = getLength; // Invalid: returns int, not bool.
+```
+
+`getLength` accepts a `String` but returns `int`, so it cannot be assigned to
+`Validator`.
+
+```dart
+// A typedef matches functions by their function type signature.
+```
+
+### Typedefs for Callbacks
+
+```dart
+typedef OnSuccess = void Function(String message);
+
+void performTask(OnSuccess onSuccess) {
+  onSuccess('Done');
+}
+```
+
+Without the alias:
+
+```dart
+void performTask(
+  void Function(String message) onSuccess,
+) {
+  onSuccess('Done');
+}
+```
+
+```dart
+// Typedefs make callback types easier to read and reuse.
+```
+
+### Important Distinction
+
+- `typedef` creates an alias for a type. It creates neither a function nor a
+  variable.
+- A function can be assigned to a variable of that alias type when its
+  signature is compatible.
+
+### Quick Revision
+
+```dart
+// typedef = a readable alias for a type.
+```
+
+```text
+typedef Operation = int Function(int, int);
+
+Operation
+    ↓
+means
+    ↓
+int Function(int, int)
+```
